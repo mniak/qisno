@@ -1,4 +1,4 @@
-package impl
+package keepass
 
 import (
 	"fmt"
@@ -8,19 +8,18 @@ import (
 	"github.com/tobischo/gokeepasslib/v3"
 )
 
-type KeepassPasswordManager struct {
-	Filename     string
-	FilePassword string
+type Keepass struct {
+	config Config
 }
 
-func loadDB(filename, password string) (*gokeepasslib.Database, error) {
-	file, err := os.Open(filename)
+func (k *Keepass) loadDB() (*gokeepasslib.Database, error) {
+	file, err := os.Open(k.config.Database)
 	if err != nil {
 		return nil, err
 	}
 	defer file.Close()
 	db := gokeepasslib.NewDatabase()
-	db.Credentials = gokeepasslib.NewPasswordCredentials(password)
+	db.Credentials = gokeepasslib.NewPasswordCredentials(k.config.Password)
 	err = gokeepasslib.NewDecoder(file).Decode(db)
 	if err != nil {
 		return nil, err
@@ -72,24 +71,4 @@ func findEntry(db *gokeepasslib.Database, path string) (gokeepasslib.Entry, erro
 		return findEntryOnSlice(group.Entries, segments[0])
 	}
 	return gokeepasslib.Entry{}, fmt.Errorf("path %s is invalid", path)
-}
-
-func (k *KeepassPasswordManager) Username(path string) (string, error) {
-	return k.Attribute(path, "Username")
-}
-
-func (k *KeepassPasswordManager) Password(path string) (string, error) {
-	return k.Attribute(path, "Password")
-}
-
-func (k *KeepassPasswordManager) Attribute(path, attr string) (string, error) {
-	db, err := loadDB(k.Filename, k.FilePassword)
-	if err != nil {
-		return "", err
-	}
-	e, err := findEntry(db, path)
-	if err != nil {
-		return "", err
-	}
-	return e.GetContent(attr), nil
 }

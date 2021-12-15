@@ -1,4 +1,4 @@
-package abstractions
+package domain
 
 type PasswordManager interface {
 	Username(path string) (string, error)
