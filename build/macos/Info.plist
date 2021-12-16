@@ -5,7 +5,7 @@
         <key>CFBundleDevelopmentRegion</key>
         <string>English</string>
         <key>CFBundleExecutable</key>
-        <string>Pismo</string>
+        <string>pismo-gui</string>
         <key>CFBundleGetInfoString</key>
         <string>Copyright 2021 mniak</string>
         <key>CFBundleIconFile</key>
