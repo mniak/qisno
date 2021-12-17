@@ -8,6 +8,7 @@ import (
 	"github.com/mniak/pismo/internal/folhacerta"
 	"github.com/mniak/pismo/internal/keepass"
 	"github.com/mniak/pismo/pkg/pismo"
+	"github.com/spf13/cobra"
 )
 
 type _Application struct {
@@ -15,14 +16,19 @@ type _Application struct {
 	OTPProvider  pismo.OTPProvider
 }
 
-func initApplication() (_Application, error) {
+func initApplication(cmd *cobra.Command) (_Application, error) {
 	conf, err := config.Load()
+	if err != nil {
+		return _Application{}, err
+	}
+	verbose, err := cmd.Flags().GetBool("verbose")
 	if err != nil {
 		return _Application{}, err
 	}
 	return _Application{
 		ClockManager: folhacerta.New(folhacerta.Config{
-			Token: conf.Clock.Token,
+			Token:   conf.Clock.Token,
+			Verbose: verbose,
 		}),
 		OTPProvider: keepass.New(keepass.Config{
 			Database: conf.OTP.Database,

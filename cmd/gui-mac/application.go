@@ -18,11 +18,10 @@ func initApplication() (_Application, error) {
 		return _Application{}, err
 	}
 	return _Application{
-		// ClockManager: &fake.ClockManager{},
 		ClockManager: folhacerta.New(folhacerta.Config{
-			Token: conf.Clock.Token,
+			Token:   conf.Clock.Token,
+			Verbose: true,
 		}),
-		// OTPProvider:  &fake.OTPProvider{},
 		OTPProvider: keepass.New(keepass.Config{
 			Database: conf.OTP.Database,
 			Password: conf.OTP.Password,

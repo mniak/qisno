@@ -19,7 +19,8 @@
             "program": "${workspaceFolder}/cmd/cli",
             "args": [
                 "otp",
-                "--print"
+                "--print",
+                "--verbose"
             ]
         },
         {
@@ -29,7 +30,8 @@
             "mode": "auto",
             "program": "${workspaceFolder}/cmd/cli",
             "args": [
-                "clock"
+                "clock",
+                "--verbose"
             ]
         },
     ]
