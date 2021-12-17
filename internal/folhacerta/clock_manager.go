@@ -11,14 +11,14 @@ import (
 
 	"github.com/ahmetb/go-linq/v3"
 	"github.com/go-resty/resty/v2"
-	"github.com/mniak/pismo/domain"
+	"github.com/mniak/pismo/pkg/pismo"
 )
 
 type _FolhaCertaClockManager struct {
 	config Config
 }
 
-func (c *_FolhaCertaClockManager) Query(ctx context.Context) (domain.ClockInfo, error) {
+func (c *_FolhaCertaClockManager) Query(ctx context.Context) (pismo.ClockInfo, error) {
 	resp, err := resty.New().SetDebug(true).R().
 		SetContext(ctx).
 		SetMultipartFormData(map[string]string{
@@ -27,14 +27,14 @@ func (c *_FolhaCertaClockManager) Query(ctx context.Context) (domain.ClockInfo, 
 		SetResult(CarregarDiaResponse{}).
 		Post("https://app.folhacerta.com/App/CarregarDia")
 	if err != nil {
-		return domain.ClockInfo{}, err
+		return pismo.ClockInfo{}, err
 	}
 	if !resp.IsSuccess() {
-		return domain.ClockInfo{}, fmt.Errorf("received invalid status code %d", resp.StatusCode())
+		return pismo.ClockInfo{}, fmt.Errorf("received invalid status code %d", resp.StatusCode())
 	}
 	result := resp.Result().(*CarregarDiaResponse)
 	if !result.Success {
-		return domain.ClockInfo{}, fmt.Errorf("request failed: %s", result.Error)
+		return pismo.ClockInfo{}, fmt.Errorf("request failed: %s", result.Error)
 	}
 
 	var marcacoes []Marcacao
@@ -48,7 +48,7 @@ func (c *_FolhaCertaClockManager) Query(ctx context.Context) (domain.ClockInfo, 
 			return linq.From(x.Marcacoes)
 		}).
 		ToSlice(&marcacoes)
-	info := domain.ClockInfo{
+	info := pismo.ClockInfo{
 		Empty:   len(result.Dia.HorariosMarcacoes) == 0,
 		Running: len(marcacoes)%2 == 1,
 	}

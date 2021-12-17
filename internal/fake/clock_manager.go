@@ -6,14 +6,14 @@ import (
 	"time"
 
 	"github.com/brianvoe/gofakeit/v6"
-	"github.com/mniak/pismo/domain"
+	"github.com/mniak/pismo/pkg/pismo"
 )
 
 type ClockManager struct{}
 
-func (c *ClockManager) Query(ctx context.Context) (domain.ClockInfo, error) {
+func (c *ClockManager) Query(ctx context.Context) (pismo.ClockInfo, error) {
 	time.Sleep(200 * time.Millisecond)
-	return domain.ClockInfo{
+	return pismo.ClockInfo{
 		Running:        gofakeit.Bool(),
 		Empty:          gofakeit.Bool(),
 		FirstStartTime: gofakeit.DateRange(time.Now().Add(-20*time.Hour), time.Now().Add(-2*time.Hour)),

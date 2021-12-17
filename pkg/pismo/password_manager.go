@@ -1,4 +1,4 @@
-package domain
+package pismo
 
 type PasswordManager interface {
 	Username(path string) (string, error)
