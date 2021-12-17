@@ -22,7 +22,7 @@ func parseDate(s string) time.Time {
 		fmt.Fprintf(os.Stderr, "failed to parse date %s\n", s)
 		return time.Time{}
 	}
-	return time.Unix(int64(n)/1000, 0)
+	return time.UnixMilli(int64(n))
 }
 
 func parseDuration(s string) time.Duration {

@@ -41,7 +41,16 @@ func (c *_FolhaCertaClockManager) Query(ctx context.Context) (pismo.ClockInfo, e
 		}).
 		SelectMany(func(i interface{}) linq.Query {
 			x := i.(HorarioMarcacao)
-			return linq.From(x.Marcacoes)
+			return linq.From(x.Marcacoes).
+				Where(func(i interface{}) bool {
+					x := i.(Marcacao)
+					return x.Tipo == 1 && x.ID != 44802715
+				})
+		}).
+		OrderBy(func(i interface{}) interface{} {
+			x := i.(Marcacao)
+			d := parseDate(x.DataHora).UnixMilli()
+			return d
 		}).
 		ToSlice(&marcacoes)
 	info := pismo.ClockInfo{
@@ -50,13 +59,15 @@ func (c *_FolhaCertaClockManager) Query(ctx context.Context) (pismo.ClockInfo, e
 	}
 	if !info.Empty {
 		info.FirstStartTime = parseDate(marcacoes[0].DataHora)
+		// info.LastStartTime = parseDate(marcacoes[((len(marcacoes)-1)/2)*2].DataHora)
 		info.LastEndTime = parseDate(marcacoes[len(marcacoes)-1].DataHora)
 	}
 	if !info.Empty {
+		trabalhadas := parseDuration(result.Dia.Resumo.HorasTrabalhadas)
 		if info.Running {
 			info.TotalTimeToday = time.Now().Sub(info.FirstStartTime)
 		} else {
-			info.TotalTimeToday = parseDuration(result.Dia.Resumo.HorasTrabalhadas)
+			info.TotalTimeToday = trabalhadas
 		}
 	}
 	return info, nil
