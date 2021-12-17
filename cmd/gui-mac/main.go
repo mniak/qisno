@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"github.com/mniak/pismo"
+	"github.com/mniak/pismo/pkg/pismo"
 )
 
 var clock pismo.ClockManager

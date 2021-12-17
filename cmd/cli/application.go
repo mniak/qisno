@@ -4,10 +4,10 @@ import (
 	"context"
 	"time"
 
-	"github.com/mniak/pismo"
 	"github.com/mniak/pismo/internal/config"
 	"github.com/mniak/pismo/internal/folhacerta"
 	"github.com/mniak/pismo/internal/keepass"
+	"github.com/mniak/pismo/pkg/pismo"
 )
 
 type _Application struct {

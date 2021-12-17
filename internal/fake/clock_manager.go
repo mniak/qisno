@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/brianvoe/gofakeit/v6"
-	"github.com/mniak/pismo"
+	"github.com/mniak/pismo/pkg/pismo"
 )
 
 type ClockManager struct{}
