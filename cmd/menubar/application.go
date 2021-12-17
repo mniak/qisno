@@ -1,15 +1,15 @@
 package main
 
 import (
-	"github.com/mniak/pismo/domain"
+	"github.com/mniak/pismo"
 	"github.com/mniak/pismo/internal/config"
 	"github.com/mniak/pismo/internal/folhacerta"
 	"github.com/mniak/pismo/internal/keepass"
 )
 
 type _Application struct {
-	ClockManager domain.ClockManager
-	OTPProvider  domain.OTPProvider
+	ClockManager pismo.ClockManager
+	OTPProvider  pismo.OTPProvider
 }
 
 func initApplication() (_Application, error) {

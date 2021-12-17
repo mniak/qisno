@@ -11,7 +11,7 @@ import (
 
 	"github.com/ahmetb/go-linq/v3"
 	"github.com/go-resty/resty/v2"
-	"github.com/mniak/pismo/pkg/pismo"
+	"github.com/mniak/pismo"
 )
 
 type _FolhaCertaClockManager struct {
