@@ -5,11 +5,22 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Launch CLI",
+            "name": "Launch MenuBar App (MacOS)",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/cmd/menubar",
+        },
+        {
+            "name": "Launch CLI - otp",
             "type": "go",
             "request": "launch",
             "mode": "auto",
             "program": "${workspaceFolder}/cmd/cli",
+            "args": [
+                "otp",
+                "--print"
+            ]
         },
         {
             "name": "Launch MenuBar App (MacOS)",
