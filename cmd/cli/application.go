@@ -1,6 +1,9 @@
 package main
 
 import (
+	"context"
+	"time"
+
 	"github.com/mniak/pismo/domain"
 	"github.com/mniak/pismo/internal/config"
 	"github.com/mniak/pismo/internal/folhacerta"
@@ -29,4 +32,9 @@ func initApplication() (_Application, error) {
 			OTPEntry: conf.OTP.Entry,
 		}),
 	}, nil
+}
+
+func newContext() context.Context {
+	ctx, _ := context.WithTimeout(context.Background(), 2*time.Second)
+	return ctx
 }

@@ -1,9 +1,7 @@
 package main
 
 import (
-	"context"
 	"fmt"
-	"time"
 
 	"github.com/spf13/cobra"
 	"golang.design/x/clipboard"
@@ -12,8 +10,7 @@ import (
 var otpCmd = &cobra.Command{
 	Use: "otp",
 	Run: func(cmd *cobra.Command, args []string) {
-		ctx, _ := context.WithTimeout(context.Background(), 2*time.Second)
-		code, err := app.OTPProvider.OTP(ctx)
+		code, err := app.OTPProvider.OTP(newContext())
 		cobra.CheckErr(err)
 
 		print, err := cmd.Flags().GetBool("print")
