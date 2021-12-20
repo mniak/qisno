@@ -42,6 +42,7 @@ func initApplication(cmd *cobra.Command) (_Application, error) {
 			Username:    conf.VPN.Username,
 			Password:    conf.VPN.Password,
 			TrustedCert: conf.VPN.TrustedCert,
+			Verbose:     verbose,
 		}),
 	}, nil
 }
