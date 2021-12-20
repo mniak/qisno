@@ -7,6 +7,7 @@ import (
 	"github.com/mniak/pismo/internal/config"
 	"github.com/mniak/pismo/internal/folhacerta"
 	"github.com/mniak/pismo/internal/keepass"
+	"github.com/mniak/pismo/internal/wrappers"
 	"github.com/mniak/pismo/pkg/pismo"
 	"github.com/spf13/cobra"
 )
@@ -14,6 +15,7 @@ import (
 type _Application struct {
 	ClockManager pismo.ClockManager
 	OTPProvider  pismo.OTPProvider
+	VPNProvider  pismo.VPNProvider
 }
 
 func initApplication(cmd *cobra.Command) (_Application, error) {
@@ -34,6 +36,12 @@ func initApplication(cmd *cobra.Command) (_Application, error) {
 			Database: conf.OTP.Database,
 			Password: conf.OTP.Password,
 			OTPEntry: conf.OTP.Entry,
+		}),
+		VPNProvider: wrappers.NewOpenfortiVPN(wrappers.OpenfortiVPNConfig{
+			Host:        conf.VPN.Host,
+			Username:    conf.VPN.Username,
+			Password:    conf.VPN.Password,
+			TrustedCert: conf.VPN.TrustedCert,
 		}),
 	}, nil
 }
