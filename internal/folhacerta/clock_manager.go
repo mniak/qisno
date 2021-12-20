@@ -3,23 +3,19 @@ package folhacerta
 import (
 	"context"
 	"fmt"
-	"os"
-	"regexp"
-	"strconv"
-	"strings"
 	"time"
 
 	"github.com/ahmetb/go-linq/v3"
 	"github.com/go-resty/resty/v2"
-	"github.com/mniak/pismo/domain"
+	"github.com/mniak/pismo/pkg/pismo"
 )
 
 type _FolhaCertaClockManager struct {
 	config Config
 }
 
-func (c *_FolhaCertaClockManager) Query(ctx context.Context) (domain.ClockInfo, error) {
-	resp, err := resty.New().SetDebug(true).R().
+func (c *_FolhaCertaClockManager) Query(ctx context.Context) (pismo.ClockInfo, error) {
+	resp, err := resty.New().SetDebug(c.config.Verbose).R().
 		SetContext(ctx).
 		SetMultipartFormData(map[string]string{
 			"tokenApp": c.config.Token,
@@ -27,14 +23,14 @@ func (c *_FolhaCertaClockManager) Query(ctx context.Context) (domain.ClockInfo, 
 		SetResult(CarregarDiaResponse{}).
 		Post("https://app.folhacerta.com/App/CarregarDia")
 	if err != nil {
-		return domain.ClockInfo{}, err
+		return pismo.ClockInfo{}, err
 	}
 	if !resp.IsSuccess() {
-		return domain.ClockInfo{}, fmt.Errorf("received invalid status code %d", resp.StatusCode())
+		return pismo.ClockInfo{}, fmt.Errorf("received invalid status code %d", resp.StatusCode())
 	}
 	result := resp.Result().(*CarregarDiaResponse)
 	if !result.Success {
-		return domain.ClockInfo{}, fmt.Errorf("request failed: %s", result.Error)
+		return pismo.ClockInfo{}, fmt.Errorf("request failed: %s", result.Error)
 	}
 
 	var marcacoes []Marcacao
@@ -45,67 +41,40 @@ func (c *_FolhaCertaClockManager) Query(ctx context.Context) (domain.ClockInfo, 
 		}).
 		SelectMany(func(i interface{}) linq.Query {
 			x := i.(HorarioMarcacao)
-			return linq.From(x.Marcacoes)
+			return linq.From(x.Marcacoes).
+				Where(func(i interface{}) bool {
+					x := i.(Marcacao)
+					return x.Tipo == 1 && x.ID != 44802715
+				})
+		}).
+		OrderBy(func(i interface{}) interface{} {
+			x := i.(Marcacao)
+			d := parseDate(x.DataHora).UnixMilli()
+			return d
 		}).
 		ToSlice(&marcacoes)
-	info := domain.ClockInfo{
+	info := pismo.ClockInfo{
 		Empty:   len(result.Dia.HorariosMarcacoes) == 0,
 		Running: len(marcacoes)%2 == 1,
 	}
 	if !info.Empty {
 		info.FirstStartTime = parseDate(marcacoes[0].DataHora)
+		// info.LastStartTime = parseDate(marcacoes[((len(marcacoes)-1)/2)*2].DataHora)
 		info.LastEndTime = parseDate(marcacoes[len(marcacoes)-1].DataHora)
 	}
 	if !info.Empty {
+		trabalhadas := parseDuration(result.Dia.Resumo.HorasTrabalhadas)
 		if info.Running {
 			info.TotalTimeToday = time.Now().Sub(info.FirstStartTime)
 		} else {
-			info.TotalTimeToday = parseDuration(result.Dia.Resumo.HorasTrabalhadas)
+			info.TotalTimeToday = trabalhadas
 		}
 	}
 	return info, nil
 }
 
-var dateRegex = regexp.MustCompile(`/Date\((\d+)\)/`)
-
-func parseDate(s string) time.Time {
-	subs := dateRegex.FindStringSubmatch(s)
-	if len(subs) > 2 {
-		fmt.Fprintf(os.Stderr, "failed to parse date %s\n", s)
-		return time.Time{}
-	}
-	n, err := strconv.Atoi(subs[1])
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "failed to parse date %s\n", s)
-		return time.Time{}
-	}
-	return time.Unix(int64(n)/1000, 0)
-}
-
-func parseDuration(s string) time.Duration {
-	segments := strings.SplitN(s, ":", 2)
-	if len(segments) < 2 {
-		fmt.Fprintf(os.Stderr, "failed to parse duration %s\n", s)
-		return 0
-	}
-
-	h, err := strconv.Atoi(segments[0])
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "failed to parse duration %s\n", s)
-		return 0
-	}
-
-	m, err := strconv.Atoi(segments[1])
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "failed to parse duration %s\n", s)
-		return 0
-	}
-
-	return time.Duration(h)*time.Hour + time.Duration(m)*time.Minute
-}
-
 func (c *_FolhaCertaClockManager) Clock(ctx context.Context) error {
-	resp, err := resty.New().SetDebug(true).R().
+	resp, err := resty.New().SetDebug(c.config.Verbose).R().
 		SetContext(ctx).
 		SetMultipartFormData(map[string]string{
 			"tokenApp":    c.config.Token,

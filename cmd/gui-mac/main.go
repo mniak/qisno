@@ -3,10 +3,10 @@ package main
 import (
 	"log"
 
-	"github.com/mniak/pismo/domain"
+	"github.com/mniak/pismo/pkg/pismo"
 )
 
-var clock domain.ClockManager
+var clock pismo.ClockManager
 
 func main() {
 	a, err := initApplication()

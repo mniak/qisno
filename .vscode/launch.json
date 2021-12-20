@@ -5,18 +5,44 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Launch CLI",
-            "type": "go",
-            "request": "launch",
-            "mode": "auto",
-            "program": "${workspaceFolder}/cmd/cli",
-        },
-        {
             "name": "Launch MenuBar App (MacOS)",
             "type": "go",
             "request": "launch",
             "mode": "auto",
             "program": "${workspaceFolder}/cmd/menubar",
-        }
+        },
+        {
+            "name": "Launch CLI - otp",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/cmd/cli",
+            "args": [
+                "otp",
+                "--print",
+                "--verbose"
+            ]
+        },
+        {
+            "name": "Launch CLI - clock show",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/cmd/cli",
+            "args": [
+                "clock",
+                "--verbose"
+            ]
+        },
+        {
+            "name": "Launch CLI - vpn",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/cmd/cli",
+            "args": [
+                "vpn"
+            ]
+        },
     ]
 }

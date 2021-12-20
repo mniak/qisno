@@ -7,6 +7,7 @@ require (
 	github.com/brianvoe/gofakeit/v6 v6.10.0
 	github.com/caseymrm/menuet v1.0.1
 	github.com/go-resty/resty/v2 v2.7.0
+	github.com/pkg/errors v0.8.1
 	github.com/pquerna/otp v1.3.0
 	github.com/spf13/cobra v1.2.1
 	github.com/spf13/viper v1.9.0
