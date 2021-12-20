@@ -3,6 +3,7 @@ package wrappers
 import (
 	"os"
 	"os/exec"
+	"strconv"
 
 	"github.com/mniak/qisno/pkg/qisno"
 )
@@ -58,7 +59,9 @@ func (o *OpenfortiVPNWrapper) Connect() (qisno.WaitFunc, qisno.DisconnectFunc, e
 			return cmd.Wait()
 		},
 		func() error {
-			return cmd.Process.Signal(os.Interrupt)
+			//return cmd.Process.Signal(os.Interrupt)
+			cmd := exec.Command("sudo", "kill", strconv.Itoa(cmd.Process.Pid))
+			return cmd.Run()
 		},
 		nil
 }

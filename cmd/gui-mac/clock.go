@@ -19,9 +19,8 @@ func (a _Application) generateClockMenuItems(ctx context.Context) []menuet.MenuI
 				Text: "Ponto: falha na consulta",
 			},
 			{
-				Text:     "Marcar Ponto",
-				FontSize: 14,
-				Clicked:  a.clock,
+				Text:    "Marcar Ponto",
+				Clicked: a.clock,
 			},
 		}
 	}
@@ -31,9 +30,8 @@ func (a _Application) generateClockMenuItems(ctx context.Context) []menuet.MenuI
 				Text: "Ponto: não marcado",
 			},
 			{
-				Text:     "Marcar Entrada",
-				FontSize: 14,
-				Clicked:  a.clock,
+				Text:    "Marcar Entrada",
+				Clicked: a.clock,
 			},
 		}
 	}
@@ -46,9 +44,8 @@ func (a _Application) generateClockMenuItems(ctx context.Context) []menuet.MenuI
 					utils.FormatDuration(info.TotalTimeToday)),
 			},
 			menuet.MenuItem{
-				Text:     "Marcar Saída",
-				FontSize: 14,
-				Clicked:  a.clock,
+				Text:    "Marcar Saída",
+				Clicked: a.clock,
 			},
 		}
 	}
@@ -61,9 +58,8 @@ func (a _Application) generateClockMenuItems(ctx context.Context) []menuet.MenuI
 				utils.FormatDuration(info.TotalTimeToday)),
 		},
 		{
-			Text:     "Reiniciar Ponto",
-			FontSize: 14,
-			Clicked:  a.clock,
+			Text:    "Reiniciar Ponto",
+			Clicked: a.clock,
 		},
 	}
 }
