@@ -32,14 +32,14 @@ func (a _Application) generateMenuItems() []menuet.MenuItem {
 	items := make([]menuet.MenuItem, 0)
 
 	ctx := newContext()
-	clockItems := a.generateClockMenuItems(ctx)
+	// clockItems := a.generateClockMenuItems(ctx)
 	otpItems := a.generateOTPMenuItems(ctx)
-	vpnItems := a.generateVPNMenuItems(ctx)
+	// vpnItems := a.generateVPNMenuItems(ctx)
 
-	items = append(items, clockItems...)
-	items = append(items, menuet.MenuItem{Type: menuet.Separator})
+	// items = append(items, clockItems...)
+	// items = append(items, menuet.MenuItem{Type: menuet.Separator})
 	items = append(items, otpItems...)
-	items = append(items, menuet.MenuItem{Type: menuet.Separator})
-	items = append(items, vpnItems...)
+	// items = append(items, menuet.MenuItem{Type: menuet.Separator})
+	// items = append(items, vpnItems...)
 	return items
 }
