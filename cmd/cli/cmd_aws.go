@@ -47,7 +47,7 @@ var cmdAwsConfig = cobra.Command{
 			"--idp-provider=Okta", "--mfa=OKTA",
 			fmt.Sprintf("--profile=%s", profile),
 			fmt.Sprintf("--url=%s", url),
-			fmt.Sprintf("--username=$okta_username", oktaUsername),
+			fmt.Sprintf("--username=%s", oktaUsername),
 			fmt.Sprintf("--password=%s", oktaPassword),
 			"--skip-prompt",
 		)

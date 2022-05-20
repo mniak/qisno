@@ -1,11 +1,13 @@
 package keepass
 
 func (k *Keepass) Username(path string) (string, error) {
-	return k.Attribute(path, "Username")
+	result, err := k.Attribute(path, "UserName")
+	return result, err
 }
 
 func (k *Keepass) Password(path string) (string, error) {
-	return k.Attribute(path, "Password")
+	result, err := k.Attribute(path, "Password")
+	return result, err
 }
 
 func (k *Keepass) Attribute(path string, attr string) (string, error) {
@@ -17,5 +19,6 @@ func (k *Keepass) Attribute(path string, attr string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return e.GetContent(attr), nil
+	result := e.GetContent(attr)
+	return result, nil
 }
