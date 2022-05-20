@@ -11,10 +11,10 @@ var otpCmd = &cobra.Command{
 	Use: "otp",
 	Run: func(cmd *cobra.Command, args []string) {
 		code, err := app.OTPProvider.OTP(newContext())
-		cobra.CheckErr(err)
+		handle(err)
 
 		print, err := cmd.Flags().GetBool("print")
-		cobra.CheckErr(err)
+		handle(err)
 		if print {
 			fmt.Println(code)
 		} else {

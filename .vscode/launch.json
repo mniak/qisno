@@ -12,7 +12,7 @@
             "program": "${workspaceFolder}/cmd/gui-mac",
         },
         {
-            "name": "Launch CLI - otp",
+            "name": "qisno otp",
             "type": "go",
             "request": "launch",
             "mode": "auto",
@@ -24,7 +24,7 @@
             ]
         },
         {
-            "name": "Launch CLI - clock show",
+            "name": "qisno clock show",
             "type": "go",
             "request": "launch",
             "mode": "auto",
@@ -35,13 +35,49 @@
             ]
         },
         {
-            "name": "Launch CLI - vpn",
+            "name": "qisno vpn",
             "type": "go",
             "request": "launch",
             "mode": "auto",
             "program": "${workspaceFolder}/cmd/cli",
             "args": [
                 "vpn"
+            ]
+        },
+        {
+            "name": "qisno aws config itau",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/cmd/cli",
+            "args": [
+                "aws", "config",
+                "itau",
+                "--verbose"
+            ]
+        },
+        {
+            "name": "qisno aws login itau",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/cmd/cli",
+            "args": [
+                "aws", "login",
+                "itau",
+                "--verbose"
+            ]
+        },
+        {
+            "name": "qisno metabase itau",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/cmd/cli",
+            "args": [
+                "metabase",
+                "itau",
+                "--verbose"
             ]
         },
     ]

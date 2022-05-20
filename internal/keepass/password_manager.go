@@ -1,16 +1,14 @@
 package keepass
 
-import "context"
+func (k *Keepass) Username(path string) (string, error) {
+	return k.Attribute(path, "Username")
+}
 
-// func (k *Keepass) Username(path string) (string, error) {
-// 	return k.Attribute(path, "Username")
-// }
+func (k *Keepass) Password(path string) (string, error) {
+	return k.Attribute(path, "Password")
+}
 
-// func (k *Keepass) Password(path string) (string, error) {
-// 	return k.Attribute(path, "Password")
-// }
-
-func (k *Keepass) Attribute(ctx context.Context, path string, attr string) (string, error) {
+func (k *Keepass) Attribute(path string, attr string) (string, error) {
 	db, err := k.loadDB()
 	if err != nil {
 		return "", err

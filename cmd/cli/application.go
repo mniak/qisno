@@ -13,9 +13,10 @@ import (
 )
 
 type _Application struct {
-	ClockManager qisno.ClockManager
-	OTPProvider  qisno.OTPProvider
-	VPNProvider  qisno.VPNProvider
+	ClockManager    qisno.ClockManager
+	OTPProvider     qisno.OTPProvider
+	VPNProvider     qisno.VPNProvider
+	PasswordManager qisno.PasswordManager
 }
 
 func initApplication(cmd *cobra.Command) (_Application, error) {
@@ -27,16 +28,18 @@ func initApplication(cmd *cobra.Command) (_Application, error) {
 	if err != nil {
 		return _Application{}, err
 	}
+
+	keepass := keepass.New(keepass.Config{
+		Database: conf.OTP.Database,
+		Password: conf.OTP.Password,
+		OTPEntry: conf.OTP.Entry,
+	})
 	return _Application{
 		ClockManager: folhacerta.New(folhacerta.Config{
 			Token:   conf.Clock.Token,
 			Verbose: verbose,
 		}),
-		OTPProvider: keepass.New(keepass.Config{
-			Database: conf.OTP.Database,
-			Password: conf.OTP.Password,
-			OTPEntry: conf.OTP.Entry,
-		}),
+		OTPProvider: keepass,
 		VPNProvider: wrappers.NewOpenfortiVPN(wrappers.OpenfortiVPNConfig{
 			Host:        conf.VPN.Host,
 			Username:    conf.VPN.Username,
@@ -44,6 +47,7 @@ func initApplication(cmd *cobra.Command) (_Application, error) {
 			TrustedCert: conf.VPN.TrustedCert,
 			Verbose:     verbose,
 		}),
+		PasswordManager: keepass,
 	}, nil
 }
 

@@ -2,10 +2,8 @@ package main
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/mniak/qisno/internal/utils"
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -13,9 +11,7 @@ var cmdClock = &cobra.Command{
 	Use: "clock",
 	Run: func(cmd *cobra.Command, args []string) {
 		info, err := app.ClockManager.Query(newContext())
-		if err != nil {
-			log.Fatalln(errors.Wrap(err, "falha na consulta"))
-		}
+		handle(err, "falha na consulta")
 
 		if info.Empty {
 			fmt.Println("Ponto não marcado")

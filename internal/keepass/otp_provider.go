@@ -9,7 +9,7 @@ import (
 )
 
 func (k *Keepass) OTP(ctx context.Context) (string, error) {
-	otp, err := k.Attribute(ctx, k.config.OTPEntry, "otp")
+	otp, err := k.Attribute(k.config.OTPEntry, "otp")
 	if err != nil {
 		return "", err
 	}
