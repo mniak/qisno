@@ -43,28 +43,40 @@
             "args": [
                 "vpn"
             ]
-        },
+        },        
         {
-            "name": "qisno aws config itau",
+            "name": "qisno aws config ext",
             "type": "go",
             "request": "launch",
             "mode": "auto",
             "program": "${workspaceFolder}/cmd/cli",
             "args": [
                 "aws", "config",
-                "itau",
+                "ext",
                 "--verbose"
             ]
         },
         {
-            "name": "qisno aws login itau",
+            "name": "qisno aws login ext",
             "type": "go",
             "request": "launch",
             "mode": "auto",
             "program": "${workspaceFolder}/cmd/cli",
             "args": [
                 "aws", "login",
-                "itau",
+                "ext",
+                "--verbose"
+            ]
+        },
+        {
+            "name": "qisno k8s config ext",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/cmd/cli",
+            "args": [
+                "k8s", "config",
+                "ext",
                 "--verbose"
             ]
         },

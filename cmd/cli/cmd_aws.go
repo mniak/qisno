@@ -26,7 +26,7 @@ var cmdAwsConfig = cobra.Command{
 		envname := args[0]
 
 		profile, err := app.PasswordManager.Attribute(fmt.Sprintf("AWS/%s", envname), "Profile")
-		handle(err, "failed to load the profile")
+		handle(err, "failed to load the profile name")
 
 		url, err := app.PasswordManager.Attribute(fmt.Sprintf("AWS/%s", envname), "URL")
 		handle(err, "failed to load the URL")
@@ -37,7 +37,7 @@ var cmdAwsConfig = cobra.Command{
 		oktaPassword, err := app.PasswordManager.Password("Provedores/Okta")
 		handle(err, "failed to load the password")
 
-		result, err := utils.ExecSimple(
+		err = utils.ExecInteractive(
 			"saml2aws", "configure",
 			"-a", profile,
 			"--idp-provider=Okta", "--mfa=OKTA",
@@ -48,8 +48,6 @@ var cmdAwsConfig = cobra.Command{
 			"--skip-prompt",
 		)
 		handle(err)
-
-		fmt.Println(result)
 	},
 }
 
@@ -60,7 +58,7 @@ var cmdAwsLogin = cobra.Command{
 		envname := args[0]
 
 		profile, err := app.PasswordManager.Attribute(fmt.Sprintf("AWS/%s", envname), "Profile")
-		handle(err, "failed to load the profile")
+		handle(err, "failed to load the profile name")
 
 		force, err := cmd.Flags().GetBool("force")
 		handle(err)
@@ -87,9 +85,7 @@ var cmdAwsLogin = cobra.Command{
 		if force {
 			saml2awsArgs = append(saml2awsArgs, "--force")
 		}
-		result, err := utils.ExecSimple("saml2aws", saml2awsArgs...)
+		err = utils.ExecInteractive("saml2aws", saml2awsArgs...)
 		handle(err)
-
-		fmt.Println(result)
 	},
 }

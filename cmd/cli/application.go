@@ -24,10 +24,6 @@ func initApplication(cmd *cobra.Command) (_Application, error) {
 	if err != nil {
 		return _Application{}, err
 	}
-	verbose, err := cmd.Flags().GetBool("verbose")
-	if err != nil {
-		return _Application{}, err
-	}
 
 	keepass := keepass.New(keepass.Config{
 		Database: conf.OTP.Database,
@@ -37,7 +33,7 @@ func initApplication(cmd *cobra.Command) (_Application, error) {
 	return _Application{
 		ClockManager: folhacerta.New(folhacerta.Config{
 			Token:   conf.Clock.Token,
-			Verbose: verbose,
+			Verbose: flagVerbose,
 		}),
 		OTPProvider: keepass,
 		VPNProvider: wrappers.NewOpenfortiVPN(wrappers.OpenfortiVPNConfig{
@@ -45,7 +41,7 @@ func initApplication(cmd *cobra.Command) (_Application, error) {
 			Username:    conf.VPN.Username,
 			Password:    conf.VPN.Password,
 			TrustedCert: conf.VPN.TrustedCert,
-			Verbose:     verbose,
+			Verbose:     flagVerbose,
 		}),
 		PasswordManager: keepass,
 	}, nil
