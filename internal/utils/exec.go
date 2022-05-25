@@ -20,8 +20,9 @@ func Exec(program string, args ...string) (string, error) {
 }
 
 func ExecContext(ctx context.Context, program string, args ...string) (string, error) {
-	fmt.Fprintf(os.Stderr, "Exec: %s %s\n", program, strings.Join(args, " "))
-
+	if execDebug {
+		fmt.Fprintf(os.Stderr, "Exec: %s %s\n", program, strings.Join(args, " "))
+	}
 	cmd := exec.CommandContext(ctx, program, args...)
 	var stdoutBuffer bytes.Buffer
 	var stderrBuffer bytes.Buffer
@@ -45,8 +46,9 @@ func ExecInteractive(program string, args ...string) error {
 }
 
 func ExecInteractiveContext(ctx context.Context, program string, args ...string) error {
-	fmt.Fprintf(os.Stderr, "Exec: %s %s\n", program, strings.Join(args, " "))
-
+	if execDebug {
+		fmt.Fprintf(os.Stderr, "Exec: %s %s\n", program, strings.Join(args, " "))
+	}
 	cmd := exec.CommandContext(ctx, program, args...)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
