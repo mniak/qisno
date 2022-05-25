@@ -21,10 +21,14 @@ var rootCmd = &cobra.Command{
 	},
 }
 
-var flagVerbose bool
+var (
+	flagVerbose   bool
+	flagAutoLogin bool
+)
 
 func main() {
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.qisno.toml)")
 	rootCmd.PersistentFlags().BoolVarP(&flagVerbose, "verbose", "v", false, "Enable verbose mode")
+	rootCmd.PersistentFlags().BoolVarP(&flagAutoLogin, "auto-login", "a", false, "Perform AWS login automatically for commands depending on it")
 	cobra.CheckErr(rootCmd.Execute())
 }

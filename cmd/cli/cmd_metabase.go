@@ -18,6 +18,10 @@ var cmdMetabase = cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		envname := args[0]
 
+		if flagAutoLogin {
+			awsLogin(envname, false)
+		}
+
 		profile, err := app.PasswordManager.Attribute(fmt.Sprintf("AWS/%s", envname), "Profile")
 		handle(err, "failed to load the profile name")
 

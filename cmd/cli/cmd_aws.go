@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/mniak/qisno/internal/utils"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -57,35 +58,51 @@ var cmdAwsLogin = cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		envname := args[0]
 
-		profile, err := app.PasswordManager.Attribute(fmt.Sprintf("AWS/%s", envname), "Profile")
-		handle(err, "failed to load the profile name")
-
 		force, err := cmd.Flags().GetBool("force")
 		handle(err)
 
-		oktaUsername, err := app.PasswordManager.Username("Provedores/Okta")
-		handle(err, "failed to load the username")
-
-		oktaPassword, err := app.PasswordManager.Password("Provedores/Okta")
-		handle(err, "failed to load the password")
-
-		otpCode, err := app.OTPProvider.OTP(newContext())
-		handle(err)
-
-		saml2awsArgs := []string{
-			"login",
-			"-a", profile,
-			"--idp-provider=Okta", "--mfa=OKTA",
-			fmt.Sprintf("--profile=%s", profile),
-			fmt.Sprintf("--mfa-token=%s", otpCode),
-			fmt.Sprintf("--username=%s", oktaUsername),
-			fmt.Sprintf("--password=%s", oktaPassword),
-			"--skip-prompt",
-		}
-		if force {
-			saml2awsArgs = append(saml2awsArgs, "--force")
-		}
-		err = utils.ExecInteractive("saml2aws", saml2awsArgs...)
+		err = awsLogin(envname, force)
 		handle(err)
 	},
+}
+
+func awsLogin(envname string, force bool) error {
+	profile, err := app.PasswordManager.Attribute(fmt.Sprintf("AWS/%s", envname), "Profile")
+	if err != nil {
+		return errors.Wrap(err, "failed to load the profile name")
+	}
+
+	oktaUsername, err := app.PasswordManager.Username("Provedores/Okta")
+	if err != nil {
+		return errors.Wrap(err, "failed to load the username")
+	}
+
+	oktaPassword, err := app.PasswordManager.Password("Provedores/Okta")
+	if err != nil {
+		return errors.Wrap(err, "failed to load the password")
+	}
+
+	otpCode, err := app.OTPProvider.OTP(newContext())
+	if err != nil {
+		return err
+	}
+
+	saml2awsArgs := []string{
+		"login",
+		"-a", profile,
+		"--idp-provider=Okta", "--mfa=OKTA",
+		fmt.Sprintf("--profile=%s", profile),
+		fmt.Sprintf("--mfa-token=%s", otpCode),
+		fmt.Sprintf("--username=%s", oktaUsername),
+		fmt.Sprintf("--password=%s", oktaPassword),
+		"--skip-prompt",
+	}
+	if force {
+		saml2awsArgs = append(saml2awsArgs, "--force")
+	}
+	err = utils.ExecInteractive("saml2aws", saml2awsArgs...)
+	if err != nil {
+		return err
+	}
+	return nil
 }
