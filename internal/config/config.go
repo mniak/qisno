@@ -8,7 +8,8 @@ type Config struct {
 }
 
 type ClockConfig struct {
-	Token string
+	Username string
+	Password string
 }
 
 type OTPConfig struct {

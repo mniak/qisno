@@ -1,8 +1,8 @@
 package main
 
 import (
+	"github.com/mniak/qisno/internal/adp"
 	"github.com/mniak/qisno/internal/config"
-	"github.com/mniak/qisno/internal/folhacerta"
 	"github.com/mniak/qisno/internal/keepass"
 	"github.com/mniak/qisno/internal/wrappers"
 	"github.com/mniak/qisno/pkg/qisno"
@@ -20,12 +20,14 @@ func initApplication() (_Application, error) {
 	if err != nil {
 		return _Application{}, err
 	}
+	adp := adp.New(adp.Config{
+		Username: conf.Clock.Username,
+		Password: conf.Clock.Password,
+		Verbose:  true,
+	})
 	return _Application{
-		Title: conf.Title,
-		ClockManager: folhacerta.New(folhacerta.Config{
-			Token:   conf.Clock.Token,
-			Verbose: true,
-		}),
+		Title:        conf.Title,
+		ClockManager: &adp,
 		OTPProvider: keepass.New(keepass.Config{
 			Database: conf.OTP.Database,
 			Password: conf.OTP.Password,

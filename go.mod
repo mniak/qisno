@@ -3,11 +3,10 @@ module github.com/mniak/qisno
 go 1.18
 
 require (
-	github.com/ahmetb/go-linq/v3 v3.2.0
 	github.com/brianvoe/gofakeit/v6 v6.10.0
 	github.com/caseymrm/menuet v1.0.1
-	github.com/go-resty/resty/v2 v2.7.0
-	github.com/pkg/errors v0.8.1
+	github.com/mniak/adpexpert v0.1.1
+	github.com/pkg/errors v0.9.1
 	github.com/pquerna/otp v1.3.0
 	github.com/spf13/cobra v1.2.1
 	github.com/spf13/viper v1.9.0
@@ -17,11 +16,14 @@ require (
 )
 
 require (
+	github.com/PuerkitoBio/goquery v1.8.0 // indirect
 	github.com/aead/argon2 v0.0.0-20180111183520-a87724528b07 // indirect
 	github.com/aead/chacha20 v0.0.0-20180709150244-8b13a72661da // indirect
+	github.com/andybalholm/cascadia v1.3.1 // indirect
 	github.com/boombuler/barcode v1.0.1-0.20190219062509-6c824513bacc // indirect
 	github.com/caseymrm/askm v1.0.0 // indirect
 	github.com/fsnotify/fsnotify v1.5.1 // indirect
+	github.com/go-resty/resty/v2 v2.7.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/magiconair/properties v1.8.5 // indirect

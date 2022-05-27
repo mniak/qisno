@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
+	"github.com/mniak/qisno/internal/adp"
 	"github.com/mniak/qisno/internal/config"
-	"github.com/mniak/qisno/internal/folhacerta"
 	"github.com/mniak/qisno/internal/keepass"
 	"github.com/mniak/qisno/internal/wrappers"
 	"github.com/mniak/qisno/pkg/qisno"
@@ -30,12 +30,14 @@ func initApplication(cmd *cobra.Command) (_Application, error) {
 		Password: conf.OTP.Password,
 		OTPEntry: conf.OTP.Entry,
 	})
+	adp := adp.New(adp.Config{
+		Username: conf.Clock.Username,
+		Password: conf.Clock.Password,
+		Verbose:  flagVerbose,
+	})
 	return _Application{
-		ClockManager: folhacerta.New(folhacerta.Config{
-			Token:   conf.Clock.Token,
-			Verbose: flagVerbose,
-		}),
-		OTPProvider: keepass,
+		ClockManager: &adp,
+		OTPProvider:  keepass,
 		VPNProvider: wrappers.NewOpenfortiVPN(wrappers.OpenfortiVPNConfig{
 			Host:        conf.VPN.Host,
 			Username:    conf.VPN.Username,
