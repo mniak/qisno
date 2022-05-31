@@ -2,33 +2,35 @@ package main
 
 import (
 	"context"
-	"fmt"
-	"os"
 
 	"github.com/caseymrm/menuet"
 	"golang.design/x/clipboard"
 )
 
-func (a _Application) generateOTPMenuItems(ctx context.Context) []menuet.MenuItem {
-	code, err := a.OTPProvider.OTP(ctx)
-	if err != nil {
-		fmt.Fprintln(os.Stderr, "failed to generate OTP:", err)
-		return []menuet.MenuItem{
-			{
-				Text: "Failed to generate OTP",
-			},
-		}
+func (a _Application) generateOTPMenuItems(ctx context.Context) []*menuet.MenuItem {
+	otpItem := &menuet.MenuItem{
+		Text: "Loading...",
 	}
 
-	return []menuet.MenuItem{
+	result := []*menuet.MenuItem{
 		{
 			Text: "OTP (click to copy)",
 		},
-		{
-			Text: code,
-			Clicked: func() {
-				clipboard.Write(clipboard.FmtText, []byte(code))
-			},
-		},
+		otpItem,
 	}
+
+	go func() {
+		code, err := a.OTPProvider.OTP(ctx)
+		if err != nil {
+			otpItem.Text = "Failed to generate OTP"
+			return
+		}
+
+		otpItem.Text = code
+		otpItem.Clicked = func() {
+			clipboard.Write(clipboard.FmtText, []byte(code))
+		}
+	}()
+
+	return result
 }

@@ -6,15 +6,17 @@ import (
 	"time"
 
 	"github.com/caseymrm/menuet"
+	"github.com/samber/lo"
 )
 
 func (a _Application) runInterface() error {
-	menuet.App().Label = "net.mniak.qisno"
-	menuet.App().SetMenuState(&menuet.MenuState{
+	app := menuet.App()
+	app.Label = "net.mniak.qisno"
+	app.SetMenuState(&menuet.MenuState{
 		Title: a.Title,
 	})
-	menuet.App().Children = a.generateMenuItems
-	menuet.App().RunApplication()
+	app.Children = a.generateMenuItems(app)
+	app.RunApplication()
 	return nil
 }
 
@@ -28,11 +30,55 @@ func newContext() context.Context {
 	return ctx
 }
 
-func (a _Application) generateMenuItems() []menuet.MenuItem {
-	items := make([]menuet.MenuItem, 0)
+type ItemsHolder struct {
+	Items []*menuet.MenuItem
+}
 
-	ctx := newContext()
+func (a _Application) generateMenuItems(menuetApp *menuet.Application) func() []menuet.MenuItem {
 	// clockItems := a.generateClockMenuItems(ctx)
+	keepAliveChan := make(chan any)
+	go monitorStatus(keepAliveChan)
+
+	var holder ItemsHolder
+	return func() []menuet.MenuItem {
+		keepAliveChan <- true
+		if !isOpen {
+			whenOpen(a, &holder)
+		}
+		go func() {
+			time.Sleep(time.Second)
+			menuetApp.MenuChanged()
+		}()
+		return lo.Map(holder.Items, func(mi *menuet.MenuItem, i int) menuet.MenuItem {
+			return *mi
+		})
+	}
+}
+
+var isOpen bool
+
+func monitorStatus(keepAliveChan chan any) {
+	for {
+		dl100ms, _ := context.WithTimeout(context.Background(), 1100*time.Millisecond)
+		select {
+		case <-dl100ms.Done():
+			if isOpen {
+				isOpen = false
+			}
+		case <-keepAliveChan:
+			if !isOpen {
+				isOpen = true
+			}
+		}
+	}
+}
+
+func whenOpen(a _Application, holder *ItemsHolder) {
+	items := make([]*menuet.MenuItem, 0)
+	// items = append(items, menuet.MenuItem{
+	// 	Text: "Abriu pela primeira vez",
+	// })
+	ctx := newContext()
 	otpItems := a.generateOTPMenuItems(ctx)
 	// vpnItems := a.generateVPNMenuItems(ctx)
 
@@ -41,5 +87,11 @@ func (a _Application) generateMenuItems() []menuet.MenuItem {
 	items = append(items, otpItems...)
 	// items = append(items, menuet.MenuItem{Type: menuet.Separator})
 	// items = append(items, vpnItems...)
-	return items
+
+	// go func() {
+	// 	time.Sleep(2 * time.Second)
+	// 	items[0].Text = "Alterei"
+	// }()
+
+	holder.Items = items
 }
