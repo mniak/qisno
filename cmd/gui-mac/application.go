@@ -25,20 +25,28 @@ func initApplication() (_Application, error) {
 		Password: conf.Clock.Password,
 		Verbose:  true,
 	})
+	// wrappers.VPNConfigwrappers.OpenfortiVPNConfig
+	// vpnConfigLoader := ifthen(condition, wrappers.VPNConfigwrappers.OpenfortiVPNConfig{
+	// 	Host:        conf.VPN.Host,
+	// 	Username:    conf.VPN.Username,
+	// 	Password:    conf.VPN.Password,
+	// 	TrustedCert: conf.VPN.TrustedCert,
+	// })
+	kp := keepass.New(keepass.Config{
+		Database: conf.OTP.Database,
+		Password: conf.OTP.Password,
+		OTPEntry: conf.OTP.Entry,
+	})
+	var vpnConfig wrappers.OpenfortiVPNConfigLoader
+	if conf.VPN.UsePasswordManager {
+		vpnConfig = wrappers.VPNConfigFromPasswordManager(kp)
+	} else {
+		vpnConfig = wrappers.VPNConfigInline(conf.VPN)
+	}
 	return _Application{
 		Title:        conf.Title,
 		ClockManager: &adp,
-		OTPProvider: keepass.New(keepass.Config{
-			Database: conf.OTP.Database,
-			Password: conf.OTP.Password,
-			OTPEntry: conf.OTP.Entry,
-		}),
-		VPNProvider: wrappers.NewOpenfortiVPN(wrappers.OpenfortiVPNConfig{
-			Host:        conf.VPN.Host,
-			Username:    conf.VPN.Username,
-			Password:    conf.VPN.Password,
-			TrustedCert: conf.VPN.TrustedCert,
-			Verbose:     true,
-		}),
+		OTPProvider:  kp,
+		VPNProvider:  wrappers.NewOpenfortiVPN(vpnConfig, false),
 	}, nil
 }

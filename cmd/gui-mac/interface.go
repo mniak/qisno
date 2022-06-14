@@ -35,7 +35,6 @@ type ItemsHolder struct {
 }
 
 func (a _Application) generateMenuItems(menuetApp *menuet.Application) func() []menuet.MenuItem {
-	// clockItems := a.generateClockMenuItems(ctx)
 	keepAliveChan := make(chan any)
 	go monitorStatus(keepAliveChan)
 
@@ -79,11 +78,13 @@ func whenOpen(a _Application, holder *ItemsHolder) {
 	// 	Text: "Abriu pela primeira vez",
 	// })
 	ctx := newContext()
-	otpItems := a.generateOTPMenuItems(ctx)
 	// vpnItems := a.generateVPNMenuItems(ctx)
 
+	// clockItems := a.generateClockMenuItems(ctx)
 	// items = append(items, clockItems...)
 	// items = append(items, menuet.MenuItem{Type: menuet.Separator})
+
+	otpItems := a.generateOTPMenuItems(ctx)
 	items = append(items, otpItems...)
 	// items = append(items, menuet.MenuItem{Type: menuet.Separator})
 	// items = append(items, vpnItems...)

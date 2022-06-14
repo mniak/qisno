@@ -19,6 +19,8 @@ type OTPConfig struct {
 }
 
 type VPNConfig struct {
+	UsePasswordManager bool
+
 	Host        string
 	Username    string
 	Password    string

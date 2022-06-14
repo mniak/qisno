@@ -25,7 +25,7 @@ func initApplication(cmd *cobra.Command) (_Application, error) {
 		return _Application{}, err
 	}
 
-	keepass := keepass.New(keepass.Config{
+	kp := keepass.New(keepass.Config{
 		Database: conf.OTP.Database,
 		Password: conf.OTP.Password,
 		OTPEntry: conf.OTP.Entry,
@@ -35,17 +35,17 @@ func initApplication(cmd *cobra.Command) (_Application, error) {
 		Password: conf.Clock.Password,
 		Verbose:  flagVerbose,
 	})
+	var vpnConfig wrappers.OpenfortiVPNConfigLoader
+	if conf.VPN.UsePasswordManager {
+		vpnConfig = wrappers.VPNConfigFromPasswordManager(kp)
+	} else {
+		vpnConfig = wrappers.VPNConfigInline(conf.VPN)
+	}
 	return _Application{
-		ClockManager: &adp,
-		OTPProvider:  keepass,
-		VPNProvider: wrappers.NewOpenfortiVPN(wrappers.OpenfortiVPNConfig{
-			Host:        conf.VPN.Host,
-			Username:    conf.VPN.Username,
-			Password:    conf.VPN.Password,
-			TrustedCert: conf.VPN.TrustedCert,
-			Verbose:     flagVerbose,
-		}),
-		PasswordManager: keepass,
+		ClockManager:    &adp,
+		OTPProvider:     kp,
+		VPNProvider:     wrappers.NewOpenfortiVPN(vpnConfig, flagVerbose),
+		PasswordManager: kp,
 	}, nil
 }
 
